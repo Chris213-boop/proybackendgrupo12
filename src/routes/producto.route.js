@@ -1,15 +1,11 @@
+const productoCtrl = require("../controllers/producto.controller");
+
 const express = require('express');
 const router = express.Router();
-const {
-  getProductos,
-  getProductoPorId,
-  getProductosPorCategoria,
-  getDestacados,
-} = require('../controllers/producto.controller');
 
-router.get('/', getProductos);
-router.get('/destacados', getDestacados);
-router.get('/categoria/:categoria', getProductosPorCategoria);
-router.get('/:id', getProductoPorId);
+router.get('/', productoCtrl.getProductos);
+router.get('/destacados', productoCtrl.getDestacados);
+router.get('/categoria/:categoria', productoCtrl.getProductosPorCategoria);
+router.get('/:id', productoCtrl.getProductoPorId);
 
 module.exports = router;
