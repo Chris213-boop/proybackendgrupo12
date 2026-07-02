@@ -10,8 +10,8 @@ var app = express();
 app.use(express.json());
 app.use(cors({ origin: 'http://localhost:4200' }));
 //Cargamos el modulo de direccionamiento de rutas
-//app.use('/api/productos', require('./src/routes/producto.route'));
-//app.use('/api/contacto', require('./src/routes/contacto.route'));
+app.use('/api/productos', require('./src/routes/producto.route'));
+app.use('/api/contactos', require('./src/routes/contacto.route'));
 
 //app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
