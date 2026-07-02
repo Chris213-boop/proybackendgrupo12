@@ -1,0 +1,241 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "API Tienda de Ropa",
+    "description": "Documentación de la API para la gestión de productos y contactos.",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Producto",
+      "description": "Operaciones relacionadas con los productos."
+    },
+    {
+      "name": "Contacto",
+      "description": "Operaciones relacionadas con los mensajes de contacto."
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "paths": {
+    "/api/productos/": {
+      "get": {
+        "tags": [
+          "Producto"
+        ],
+        "summary": "Obtener todos los productos",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Producto"
+        ],
+        "summary": "Crear un producto",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Producto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/productos/destacados": {
+      "get": {
+        "tags": [
+          "Producto"
+        ],
+        "summary": "Obtener productos destacados",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/productos/categoria/{categoria}": {
+      "get": {
+        "tags": [
+          "Producto"
+        ],
+        "summary": "Obtener productos por categoría",
+        "description": "",
+        "parameters": [
+          {
+            "name": "categoria",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/productos/{id}": {
+      "get": {
+        "tags": [
+          "Producto"
+        ],
+        "summary": "Obtener producto por ID",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/contactos/": {
+      "get": {
+        "tags": [
+          "Contacto"
+        ],
+        "summary": "Obtener todos los contactos",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Contacto"
+        ],
+        "summary": "Crear un mensaje de contacto",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Contacto"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Producto": {
+      "type": "object",
+      "properties": {
+        "nombre": {
+          "type": "string",
+          "example": "Remera Oversize"
+        },
+        "categoria": {
+          "type": "string",
+          "example": "Remeras"
+        },
+        "precio": {
+          "type": "number",
+          "example": 25000
+        },
+        "descuento": {
+          "type": "number",
+          "example": 10
+        },
+        "imagen": {
+          "type": "string",
+          "example": "https://misitio.com/imagenes/remera.jpg"
+        },
+        "descripcion": {
+          "type": "string",
+          "example": "Remera de algodón oversize."
+        },
+        "material": {
+          "type": "string",
+          "example": "Algodón"
+        },
+        "destacado": {
+          "type": "boolean",
+          "example": true
+        },
+        "stock": {
+          "type": "boolean",
+          "example": true
+        }
+      }
+    },
+    "Contacto": {
+      "type": "object",
+      "properties": {
+        "nombre": {
+          "type": "string",
+          "example": "Juan Pérez"
+        },
+        "email": {
+          "type": "string",
+          "example": "juan@gmail.com"
+        },
+        "telefono": {
+          "type": "string",
+          "example": "3884123456"
+        },
+        "mensaje": {
+          "type": "string",
+          "example": "Quisiera consultar por la disponibilidad de un producto."
+        }
+      }
+    }
+  }
+}

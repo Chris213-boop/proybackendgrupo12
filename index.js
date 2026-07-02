@@ -2,8 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const sequelize = require('./config/database');
 
-//const swaggerUi = require('swagger-ui-express'); //importamos la libreria, y esta genera una interfaz grafica
-//const swaggerFile = require('./swagger_output.json');
+const swaggerUi = require('swagger-ui-express'); //importamos la libreria, y esta genera una interfaz grafica
+const swaggerFile = require('./swagger_output.json');
 
 var app = express();
 //middlewares
@@ -13,7 +13,7 @@ app.use(cors({ origin: 'http://localhost:4200' }));
 app.use('/api/productos', require('./src/routes/producto.route'));
 app.use('/api/contactos', require('./src/routes/contacto.route'));
 
-//app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 //setting
 app.set('port', process.env.PORT || 3000);
