@@ -2,7 +2,7 @@ const Contacto = require('../models/contacto.model');
 const contactoCtrl = {};
 
 // Dar de alta
-contactoCtrl.enviarMensajeContacto = async (req, res) => {
+contactoCtrl.crearContacto = async (req, res) => {
     try {
     // Sequelize usa .create() para instanciar y guardar en un solo paso
         await Contacto.create(req.body);
@@ -11,5 +11,16 @@ contactoCtrl.enviarMensajeContacto = async (req, res) => {
         res.status(400).json({ status: '0', msg: 'Error procesando operacion.' });
     }
 };
+
+//mostrar todos
+contactoCtrl.getContactos = async (req, res) => {
+    try {
+        const contactos = await Contacto.findAll();
+        res.json(contactos);
+    } catch (error) {
+        res.status(400).json({ status: '0', msg: 'Error al obtener Contactos.' });
+    }
+};
+
 
 module.exports = contactoCtrl;

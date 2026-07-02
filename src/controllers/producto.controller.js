@@ -27,7 +27,7 @@ productoCtrl.getDestacados = async (req, res) => {
 };
 
 //get por categoria
-productoCtrl.getDestacados = async (req, res) => {
+productoCtrl.getProductosPorCategoria = async (req, res) => {
     try {
         const productos = await Producto.findAll({
             where: {
@@ -53,6 +53,17 @@ productoCtrl.getProductoPorId = async (req, res) => {
         res.json(productos);
     } catch (error) {
         res.status(500).json({ status: '0', msg: 'Error al obtener los Productos.' });
+    }
+};
+
+//post
+productoCtrl.crearProducto = async (req, res) => {
+    try {
+        await Producto.create(req.body);
+
+        res.json({ status: '1', msg: 'producto Guardado.' });
+    } catch (error) {
+        res.status(500).json({ status: '0', msg: 'Error al agregar.' });
     }
 };
 
