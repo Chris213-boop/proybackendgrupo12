@@ -3,6 +3,10 @@ const productoCtrl = {};
 
 // Recuperar todos
 productoCtrl.getProductos = async (req, res) => {
+    /*
+    #swagger.tags = ['Producto']
+    #swagger.summary = 'Obtener todos los productos'
+    */
     try {
         const productos = await Producto.findAll();
         res.json(productos);
@@ -13,6 +17,10 @@ productoCtrl.getProductos = async (req, res) => {
 
 //get Productos destacados
 productoCtrl.getDestacados = async (req, res) => {
+    /*
+    #swagger.tags = ['Producto']
+    #swagger.summary = 'Obtener productos destacados'
+    */
     try {
         const productos = await Producto.findAll({
             where: {
@@ -28,10 +36,19 @@ productoCtrl.getDestacados = async (req, res) => {
 
 //get por categoria
 productoCtrl.getProductosPorCategoria = async (req, res) => {
+    /*
+    #swagger.tags = ['Producto']
+    #swagger.summary = 'Obtener productos por categoría'
+    #swagger.parameters['categoria'] = {
+        in: 'path',
+        required: true,
+        type: 'string'
+    }
+    */
     try {
         const productos = await Producto.findAll({
             where: {
-                categoria : req.params.categoria
+                categoria: req.params.categoria
             }
         });
 
@@ -43,10 +60,19 @@ productoCtrl.getProductosPorCategoria = async (req, res) => {
 
 // getProductoPorId
 productoCtrl.getProductoPorId = async (req, res) => {
+    /*
+    #swagger.tags = ['Producto']
+    #swagger.summary = 'Obtener producto por ID'
+    #swagger.parameters['id'] = {
+        in: 'path',
+        required: true,
+        type: 'integer'
+    }
+    */
     try {
         const productos = await Producto.findAll({
             where: {
-                id : req.params.id
+                id: req.params.id
             }
         });
 
@@ -58,6 +84,15 @@ productoCtrl.getProductoPorId = async (req, res) => {
 
 //post
 productoCtrl.crearProducto = async (req, res) => {
+    /*
+    #swagger.tags = ['Producto']
+    #swagger.summary = 'Crear un producto'
+    #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: { $ref: '#/definitions/Producto' }
+    }
+    */
     try {
         await Producto.create(req.body);
 
