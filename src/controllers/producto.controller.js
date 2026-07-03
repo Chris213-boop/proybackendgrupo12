@@ -70,7 +70,7 @@ productoCtrl.getProductoPorId = async (req, res) => {
     }
     */
     try {
-        const productos = await Producto.findAll({
+        const productos = await Producto.findOne({
             where: {
                 id: req.params.id
             }
