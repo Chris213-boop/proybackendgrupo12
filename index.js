@@ -16,8 +16,11 @@ app.use('/api/contactos', require('./src/routes/contacto.route'));
 
 app.use('/api/usuario', require('./src/routes/usuario.route'));
 
+app.use('/api/mp', require('./src/routes/mp.route'));
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+
+console.log("Access Token:", process.env.ACCESS_TOKEN);
 
 //setting
 app.set('port', process.env.PORT || 3000);
