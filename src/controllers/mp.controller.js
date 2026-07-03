@@ -5,7 +5,7 @@ const crypto = require("crypto");
 mpCtrl.getPaymentLink = async (req, res) => {
     try {
         const url = "https://api.mercadopago.com/checkout/preferences";
-        const { items } = req.body;
+        const { items } = req.body.items;
         const body = {
             external_reference: "PEDIDO_" + Date.now(),
             items: items,
