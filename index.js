@@ -13,6 +13,9 @@ app.use(cors({ origin: 'http://localhost:4200' }));
 app.use('/api/productos', require('./src/routes/producto.route'));
 app.use('/api/contactos', require('./src/routes/contacto.route'));
 
+app.use('/api/usuario', require('./src/routes/usuario.route'));
+
+
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 //setting
