@@ -5,7 +5,8 @@ const crypto = require("crypto");
 mpCtrl.getPaymentLink = async (req, res) => {
     try {
         const url = "https://api.mercadopago.com/checkout/preferences";
-        const { items } = req.body.items;
+        const { items, comprador } = req.body;
+        //comprador se utilizará en otra tabla
         const body = {
             external_reference: "PEDIDO_" + Date.now(),
             items: items,
