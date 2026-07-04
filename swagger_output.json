@@ -15,6 +15,10 @@
     {
       "name": "Contacto",
       "description": "Operaciones relacionadas con los mensajes de contacto."
+    },
+    {
+      "name": "Usuario",
+      "description": "Operaciones relacionadas con los usuarios."
     }
   ],
   "schemes": [
@@ -209,46 +213,89 @@
         }
       }
     },
-    "/api/usuario/": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "authorization",
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        }
-      }
-    },
     "/api/usuario/login": {
       "post": {
+        "tags": [
+          "Usuario"
+        ],
+        "summary": "Iniciar sesión de un usuario",
         "description": "",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "username": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "juanperez"
                 },
                 "password": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "123456"
                 }
               }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Login exitoso",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "number",
+                  "example": 1
+                },
+                "msg": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "username": {
+                  "type": "string",
+                  "example": "juanperez"
+                },
+                "perfil": {
+                  "type": "string",
+                  "example": "administrador"
+                },
+                "userid": {
+                  "type": "number",
+                  "example": 1
+                },
+                "token": {
+                  "type": "string",
+                  "example": "jwt_token_here"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/api/usuario/": {
+      "post": {
+        "tags": [
+          "Usuario"
+        ],
+        "summary": "Crear un nuevo usuario",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Usuario"
             }
           }
         ],
@@ -260,11 +307,102 @@
             "description": "Bad Request"
           }
         }
+      },
+      "get": {
+        "tags": [
+          "Usuario"
+        ],
+        "summary": "Obtener todos los usuarios",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/usuario/{id}": {
+      "delete": {
+        "tags": [
+          "Usuario"
+        ],
+        "summary": "Eliminar un usuario",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Usuario"
+        ],
+        "summary": "Modificar un usuario",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Usuario"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
       }
     },
     "/api/mp/payment": {
       "post": {
         "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "items": {
+                  "example": "any"
+                },
+                "comprador": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -336,6 +474,44 @@
         "mensaje": {
           "type": "string",
           "example": "Quisiera consultar por la disponibilidad de un producto."
+        }
+      }
+    },
+    "Usuario": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "example": "juanperez"
+        },
+        "password": {
+          "type": "string",
+          "example": "123456"
+        },
+        "nombres": {
+          "type": "string",
+          "example": "Juan"
+        },
+        "apellido": {
+          "type": "string",
+          "example": "Pérez"
+        },
+        "perfil": {
+          "type": "string",
+          "example": "administrador"
+        }
+      }
+    },
+    "Login": {
+      "type": "object",
+      "properties": {
+        "username": {
+          "type": "string",
+          "example": "juanperez"
+        },
+        "password": {
+          "type": "string",
+          "example": "123456"
         }
       }
     }

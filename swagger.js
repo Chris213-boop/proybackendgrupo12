@@ -18,6 +18,10 @@ const doc = {
         {
             name: 'Contacto',
             description: 'Operaciones relacionadas con los mensajes de contacto.'
+        },
+        {
+            name: 'Usuario',
+            description: 'Operaciones relacionadas con los usuarios.'
         }
     ],
 
@@ -40,8 +44,20 @@ const doc = {
             email: 'juan@gmail.com',
             telefono: '3884123456',
             mensaje: 'Quisiera consultar por la disponibilidad de un producto.'
-        }
+        },
 
+        Usuario: {
+            username: 'juanperez',
+            password: '123456',
+            nombres: 'Juan',
+            apellido: 'Pérez',
+            perfil: 'administrador'
+        },
+
+        Login: {
+            username: 'juanperez',
+            password: '123456'
+        }
     }
 };
 

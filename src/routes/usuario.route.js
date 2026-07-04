@@ -5,8 +5,14 @@ const usuarioCtrl = require('./../controllers/usuario.controller');
 const autCtrl = require('./../controllers/auth.controller');
 
 // definiendo rutas
-router.post('/', autCtrl.verifyToken, usuarioCtrl.createUsuario);
 router.post('/login', usuarioCtrl.loginUsuario);
+
+router.post('/', usuarioCtrl.createUsuario);//crear usuario
+router.get('/', usuarioCtrl.getUsuarios);//obtener todos los usuarios
+router.delete('/:id', usuarioCtrl.deleteUsuario);//eliminar usuario
+router.put('/:id', usuarioCtrl.editUsuario);//editar usuario
+
+
 //exportacion del modulo de rutas
 
 module.exports = router;
