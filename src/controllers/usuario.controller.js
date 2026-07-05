@@ -1,8 +1,8 @@
 const Usuario = require('./../models/usuario.models')
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 const usuarioCtrl = {}
-
 
 usuarioCtrl.loginUsuario = async (req, res) => {
     /*
@@ -32,14 +32,13 @@ usuarioCtrl.loginUsuario = async (req, res) => {
     if (!req.body.username || !req.body.password) {
         return res.status(400).json({ status: 0, msg: "Faltan credenciales" });
     }
-    // Criterio de búsqueda estricto: DEBEN coincidir username Y password
-    let criteria = {
-        where: {
-            username: req.body.username,
-            password: req.body.password
-        }
-    };
     try {
+        // Criterio de búsqueda estricto: DEBEN coincidir username Y password
+        let criteria = {
+            where: {
+                username: req.body.username
+            }
+        };
         //el método findOne retorna un objeto que cumpla con los criterios de busqueda
         const user = await Usuario.findOne(criteria);
         if (!user) {
@@ -47,8 +46,15 @@ usuarioCtrl.loginUsuario = async (req, res) => {
                 status: 0,
                 msg: "not found"
             })
-        } else {
-            const unToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+        }
+        
+        // Comparación segura de hash con bcrypt (Evita texto plano)
+        const isMatch = await bcrypt.compare(req.body.password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ status: 0, msg: "Credenciales incorrectas" });
+        }
+        else {
+            const unToken = jwt.sign({ id: user.id, perfil: user.perfil }, process.env.JWT_SECRET);
             res.json({
                 status: 1,
                 msg: "success",
@@ -79,13 +85,16 @@ usuarioCtrl.createUsuario = async (req, res) => {
     //en req.body se espera que vengan los datos de usuario a crear
     const data = req.body;
     try {
+        if (data.password) {
+            // CORRECCIÓN: Hasheo de la contraseña antes de guardar en la BD
+            const salt = await bcrypt.genSalt(10);
+            data.password = await bcrypt.hash(data.password, salt);
+        }
+
         await Usuario.create(data);
         res.status(200).json({ status: '1', msg: 'Usuario guardado.' });
     } catch (error) {
-        res.status(400).json({
-            'status': '0',
-            'msg': 'Error procesando operacion.'
-        })
+        res.status(400).json({ status: '0', msg: 'Error procesando operacion.' });
     }
 }
 
