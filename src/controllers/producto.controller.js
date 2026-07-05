@@ -82,7 +82,7 @@ productoCtrl.getProductoPorId = async (req, res) => {
     }
 };
 
-//post
+//CREAR
 productoCtrl.crearProducto = async (req, res) => {
     /*
     #swagger.tags = ['Producto']
@@ -99,6 +99,59 @@ productoCtrl.crearProducto = async (req, res) => {
         res.json({ status: '1', msg: 'producto Guardado.' });
     } catch (error) {
         res.status(500).json({ status: '0', msg: 'Error al agregar.' });
+    }
+};
+
+//MODIFICAR
+productoCtrl.modificarProducto = async (req, res) => {
+    /*
+    #swagger.tags = ['Producto']
+    #swagger.summary = 'Modificar un Producto'
+    #swagger.parameters['id'] = {
+        in: 'path',
+        required: true,
+        type: 'integer'
+    }
+    #swagger.parameters['body'] = {
+        in: 'body',
+        required: true,
+        schema: { $ref: '#/definitions/Producto' }
+    }
+    */
+    const data = req.body;
+    try {
+        const producto = await Producto.findByPk(req.params.id);
+        if (producto) {
+            await producto.update(data);
+            res.status(200).json({ status: '1', msg: 'Producto actualizado' });
+        } else {
+            res.status(404).json({ status: '0', msg: 'Producto no encontrado' });
+        }
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Error al actualiza Producto', error: error.message });
+    }
+}
+
+//DELETE
+productoCtrl.deleteProducto = async (req, res) => {
+    /*
+    #swagger.tags = ['Producto']
+    #swagger.summary = 'Eliminar un Producto'
+    #swagger.parameters['id'] = {
+        in: 'path',
+        required: true,
+        type: 'integer'
+    }
+    */
+    try {
+        // .destroy() elimina el registro que coincida con el ID enviado por parámetro
+        await Producto.destroy({
+            where: { id: req.params.id }
+        });
+        res.json({ status: '1', msg: 'Producto removed' });
+    } catch (error) {
+        res.status(400).json({ status: '0', msg: 'Error procesando la operacion' });
     }
 };
 
