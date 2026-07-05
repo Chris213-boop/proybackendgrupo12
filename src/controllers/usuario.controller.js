@@ -157,5 +157,22 @@ usuarioCtrl.editUsuario = async (req, res) => {
 };
 
 
+// Obtener usuario por ID
+usuarioCtrl.gerUsuarioPorId = async (req, res) => {
+    /*
+        #swagger.tags = ['Usuario']
+        #swagger.summary = 'Obtener usuario por ID'
+    */
+    try {
+        // Buscamos por la clave primaria (id numérico)
+        const usuario = await Usuario.findByPk(req.params.id);
+        if (!usuario) {
+            return res.status(404).json({ status: '0', msg: 'Usuario no encontrado.' });
+        }
+        res.json(usuario);
+    } catch (error) {
+        res.status(500).json({ status: '0', msg: 'Error al obtener el Usuario.' });
+    }
+};
 //exportacion del modulo controlador
 module.exports = usuarioCtrl;
