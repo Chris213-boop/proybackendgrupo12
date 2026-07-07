@@ -15,6 +15,7 @@ app.use('/api/productos', require('./src/routes/producto.route'));
 app.use('/api/contactos', require('./src/routes/contacto.route'));
 
 app.use('/api/usuario', require('./src/routes/usuario.route'));
+app.use('/api/dashboard', require('./src/routes/dashboard.route'));
 
 app.use('/api/mp', require('./src/routes/mp.route'));
 

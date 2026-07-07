@@ -154,6 +154,13 @@ usuarioCtrl.editUsuario = async (req, res) => {
     try {
         const usuarios = await Usuario.findByPk(req.params.id);
         if (usuarios) {
+            if (data.password) {
+                const bcrypt = require('bcryptjs');
+                const salt = await bcrypt.genSalt(10);
+                data.password = await bcrypt.hash(data.password, salt);
+            } else {
+                delete data.password;
+            }
             await usuarios.update(data);
             res.status(200).json({ status: '1', msg: 'Usuario actualizado' });
         } else {
