@@ -1,6 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../config/database');
 
+const Detalle = require('../models/detalle.model');
+
 const Producto = sequelize.define('Producto', {
 
     nombre: { type: DataTypes.STRING, allowNull: false },
@@ -25,5 +27,8 @@ const Producto = sequelize.define('Producto', {
     tableName: 'productos', // Nombre de la tabla en minúsculas y plural
     timestamps: true, // Crea automáticamente los campos createdAt y updatedAt
 });
+
+Producto.hasMany(Detalle, { foreignKey: 'productoId' });
+Detalle.belongsTo(Producto, { foreignKey: 'productoId' });
 
 module.exports = Producto;
