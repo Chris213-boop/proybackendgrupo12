@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../../config/database');
+const Acceso = require('../models/acceso.model');
 
 const  Usuario = sequelize.define('Usuario', {
     username: { type: DataTypes.STRING, allowNull: false },
@@ -10,11 +11,21 @@ const  Usuario = sequelize.define('Usuario', {
 
     apellido: { type: DataTypes.STRING, allowNull: false },
 
-    perfil: { type: DataTypes.STRING, allowNull: false } //administrador-gestor-invitado-etc
+    perfil: { type: DataTypes.STRING, allowNull: false } ,//ADMINISTRADOR-CLIENTE-EMPLEADO
+
+    email: { 
+        type: DataTypes.STRING, 
+        allowNull: false, 
+        unique: true,
+        validate: { isEmail: true } // Validación nativa del servidor
+    }
 
 }, {
     tableName: 'usuarios',
-    timestamps: false,
+    timestamps: true,
 });
+
+Usuario.hasMany(Acceso, { foreignKey: 'usuarioId'});
+Acceso.belongsTo(Usuario, { foreignKey: 'usuarioId' });
 
 module.exports = Usuario;
