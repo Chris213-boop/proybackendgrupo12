@@ -28,47 +28,38 @@ usuarioCtrl.loginUsuario = async (req, res) => {
         }
     }
 */
-    //en req.body se espera que vengan las credenciales de login
     if (!req.body.username || !req.body.password) {
         return res.status(400).json({ status: 0, msg: "Faltan credenciales" });
     }
+
     try {
-        // Criterio de búsqueda estricto: DEBEN coincidir username Y password
-        let criteria = {
-            where: {
-                username: req.body.username
-            }
-        };
-        //el método findOne retorna un objeto que cumpla con los criterios de busqueda
-        const user = await Usuario.findOne(criteria);
-        if (!user) {
-            res.json({
-                status: 0,
-                msg: "not found"
-            })
-        }
+        const user = await Usuario.findOne({ where: { username: req.body.username } });
         
-        // Comparación segura de hash con bcrypt (Evita texto plano)
+        if (!user) {
+            return res.status(401).json({ status: 0, msg: "not found" });
+        }
+
         const isMatch = await bcrypt.compare(req.body.password, user.password);
         if (!isMatch) {
             return res.status(401).json({ status: 0, msg: "Credenciales incorrectas" });
         }
-        else {
-            const unToken = jwt.sign({ id: user.id, perfil: user.perfil }, process.env.JWT_SECRET);
-            res.json({
-                status: 1,
-                msg: "success",
-                username: user.username, //retorno información útil para el frontend
-                perfil: user.perfil, //retorno información útil para el frontend
-                userid: user.id, //retorno información útil para el frontend
-                token: unToken
-            })
-        }
-    } catch (error) {
+
+        const unToken = jwt.sign(
+            { id: user.id, perfil: user.perfil }, 
+            process.env.JWT_SECRET
+        );
+
         res.json({
-            status: 0,
-            msg: 'error'
-        })
+            status: 1,
+            msg: "success",
+            username: user.username,
+            perfil: user.perfil,
+            userid: user.id,
+            token: unToken
+        });
+
+    } catch (error) {
+        res.status(500).json({ status: 0, msg: 'error', error: error.message });
     }
 }
 //crear usuarios
