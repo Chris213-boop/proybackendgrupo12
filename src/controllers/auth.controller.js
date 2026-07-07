@@ -31,7 +31,8 @@ authCtrl.verifyToken = async (req, res, next) => {
 
 // Middleware para control de acceso por roles
 authCtrl.isAdmin = (req, res, next) => {
-    if (req.userPerfil && req.userPerfil.toLowerCase() === 'administrador') {
+    console.log(req.userPerfil);
+    if (req.userPerfil && req.userPerfil === 'Empleado') {
         next();
     } else {
         return res.status(403).json({ status: 0, msg: 'Acceso denegado: Se requieren permisos de Administrador.' });
