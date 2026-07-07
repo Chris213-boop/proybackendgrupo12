@@ -18,9 +18,9 @@ authCtrl.verifyToken = async (req, res, next) => {
         });
     }
     try {
-        // 4. Capturar errores de verificación (token expirado, firma inválida, etc.)
         const payload = jwt.verify(token, "secretkey");
         req.userId = payload.id;
+        req.userPerfil = payload.perfil;
         next();
     } catch (error) {
         return res.status(401).json({
@@ -29,7 +29,7 @@ authCtrl.verifyToken = async (req, res, next) => {
     }
 }
 
-// Middleware para control de acceso por roles (Requisito Obligatorio)
+// Middleware para control de acceso por roles
 authCtrl.isAdmin = (req, res, next) => {
     if (req.userPerfil && req.userPerfil.toLowerCase() === 'administrador') {
         next();
