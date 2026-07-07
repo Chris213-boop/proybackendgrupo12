@@ -8,10 +8,10 @@ const autCtrl = require('./../controllers/auth.controller');
 router.post('/login', usuarioCtrl.loginUsuario);
 router.post('/', usuarioCtrl.createUsuario);//crear usuario
 
-router.get('/', [autCtrl.verifyToken, autCtrl.isAdmin] , usuarioCtrl.getUsuarios);//obtener todos los usuarios
-router.delete('/:id', [autCtrl.verifyToken, autCtrl.isAdmin] , usuarioCtrl.deleteUsuario);//eliminar usuario
-router.put('/:id', [autCtrl.verifyToken, autCtrl.isAdmin] , usuarioCtrl.editUsuario);//editar usuario
-router.get('/:id',[autCtrl.verifyToken, autCtrl.isAdmin] , usuarioCtrl.gerUsuarioPorId);//buscar ususario por ID
+router.get('/', usuarioCtrl.getUsuarios);//obtener todos los usuarios
+router.delete('/:id', usuarioCtrl.deleteUsuario);//eliminar usuario
+router.put('/:id', usuarioCtrl.editUsuario);//editar usuario
+router.get('/:id', usuarioCtrl.gerUsuarioPorId);//buscar ususario por ID
 
 //exportacion del modulo de rutas
 
