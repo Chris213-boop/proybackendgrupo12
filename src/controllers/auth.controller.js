@@ -31,7 +31,6 @@ authCtrl.verifyToken = async (req, res, next) => {
 
 // Middleware para control de acceso por roles
 authCtrl.isAdmin = (req, res, next) => {
-    console.log(req.userPerfil);
     if (req.userPerfil && req.userPerfil === 'Empleado') {
         next();
     } else {
