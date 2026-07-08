@@ -21,7 +21,7 @@ const Producto = sequelize.define('Producto', {
 
     destacado: { type: DataTypes.BOOLEAN, allowNull: false},
 
-    stock: { type: DataTypes.BOOLEAN, allowNull: false }
+    stock: { type: DataTypes.INTEGER, allowNull: false }
     
 }, {
     tableName: 'productos', // Nombre de la tabla en minúsculas y plural

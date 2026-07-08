@@ -31,10 +31,18 @@ authCtrl.verifyToken = async (req, res, next) => {
 
 // Middleware para control de acceso por roles
 authCtrl.isAdmin = (req, res, next) => {
-    if (req.userPerfil && req.userPerfil === 'Empleado') {
+    if (req.userPerfil && req.userPerfil === 'Administrador') {
         next();
     } else {
         return res.status(403).json({ status: 0, msg: 'Acceso denegado: Se requieren permisos de Administrador.' });
+    }
+};
+
+authCtrl.isEmpleado = (req, res, next) => {
+    if (req.userPerfil && req.userPerfil === 'Empleado') {
+        next();
+    } else {
+        return res.status(403).json({ status: 0, msg: 'Acceso denegado: Se requieren permisos de Empleado.' });
     }
 };
 
