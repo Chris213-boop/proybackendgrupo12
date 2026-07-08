@@ -6,6 +6,7 @@ const autCtrl = require('./../controllers/auth.controller');
 
 // definiendo rutas
 router.post('/login', usuarioCtrl.loginUsuario);
+router.post('/google-login', usuarioCtrl.loginGoogle); // público: mismo motivo, es la puerta de entrada
 router.post('/', usuarioCtrl.createUsuario);//crear usuario
 
 router.get('/', [autCtrl.verifyToken, autCtrl.isAdmin], usuarioCtrl.getUsuarios);//obtener todos los usuarios
