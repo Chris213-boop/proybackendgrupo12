@@ -174,10 +174,7 @@ usuarioCtrl.getUsuarios = async (req, res) => {
         #swagger.summary = 'Obtener todos los usuarios'
         */
     try {
-        const usuarios = await Usuario.findAll({
-            attributes: {
-                exclude: ['usuarioId']
-            },
+        const usuarios = await Usuario.findAll({ 
             include:[{
                 model: Acceso,
                 as: "accesos",
