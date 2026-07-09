@@ -13,7 +13,7 @@ router.get('/', [autCtrl.verifyToken, autCtrl.isAdmin], usuarioCtrl.getUsuarios)
 router.delete('/:id',[autCtrl.verifyToken, autCtrl.isAdmin], usuarioCtrl.deleteUsuario);//eliminar usuario
 router.put('/:id',[autCtrl.verifyToken, autCtrl.isAdmin], usuarioCtrl.editUsuario);//editar usuario
 router.get('/:id', [autCtrl.verifyToken, autCtrl.isAdmin], usuarioCtrl.gerUsuarioPorId);//buscar ususario por ID
-router.post('/:id/acceso', [autCtrl.verifyToken, autCtrl.isAdmin], usuarioCtrl.addAcceso);
+router.post('/:id/acceso', usuarioCtrl.addAcceso);
 
 //exportacion del modulo de rutas
 
