@@ -27,6 +27,7 @@ pedidoCtrl.crearPedido = async (req, res) => {
         await t.commit();
         res.status(201).json({ status: '1', pedidoId: pedido.id });
     } catch (error) {
+        console.error(error);
         await t.rollback();
         res.status(500).json({ status: '0', msg: 'Error al crear el pedido' });
     }
@@ -37,6 +38,7 @@ pedidoCtrl.getPedidos = async (req, res) => {
         const pedidos = await Pedido.findAll({ include: { model: Detalle, as: 'detalles' } });
         res.json(pedidos);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ status: '0', msg: 'Error al obtener pedidos' });
     }
 };
