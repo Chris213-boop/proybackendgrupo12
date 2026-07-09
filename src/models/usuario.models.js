@@ -13,12 +13,7 @@ const  Usuario = sequelize.define('Usuario', {
 
     perfil: { type: DataTypes.STRING, allowNull: false } ,//ADMINISTRADOR-CLIENTE-EMPLEADO
 
-    email: { 
-        type: DataTypes.STRING, 
-        allowNull: false, 
-        unique: true,
-        validate: { isEmail: true } // Validación nativa del servidor
-    }
+    email: { type: DataTypes.STRING, allowNull: false, unique: true, validate: { isEmail: true } }// Validación nativa del servidor
 
 }, {
     tableName: 'usuarios',

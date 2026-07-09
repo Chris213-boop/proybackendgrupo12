@@ -290,5 +290,55 @@ usuarioCtrl.addAcceso = async (req, res) => {
         res.status(500).json({message: 'Error al agregar acceso', error: error.message});
     }
 };
+
+
+
+//Buscar parcialmente por nombre
+usuarioCtrl.getBuscarCoincidenciaEnNombre = async (req, res) => {
+    /*
+        #swagger.tags = ['Usuario']
+        #swagger.summary = 'Buscar socios por coincidencia en nombre.'
+        #swagger.description = 'Busca en la columna de nombres, los usuarios que tengan coincidencia con la descripcion que se coloca.'
+        #swagger.parameters['nombres'] = {
+            in: 'path',
+            required: true,
+            type: 'string'
+        }
+        */
+    console.log("Entró a buscarPorNombre");
+    try {
+        const usuarios = await Usuario.findAll({
+            where: {
+                [Op.or]: [
+                    {
+                        nombres: { [Op.iLike]: `%${req.params.texto}%` }
+                    },
+                    {
+                        apellido: {
+                            [Op.iLike]: `%${req.params.texto}%`
+                        }
+                    },
+                    {
+                        email: {
+                            [Op.iLike]: `%${req.params.texto}%`
+                        }
+                    }
+                ]
+            }
+        });
+        if (usuarios.length !== 0) {
+            res.json(usuarios);
+        } else {
+            res.status(404).json({ status: '0', msg: 'No hay coincidencias.' })
+        }
+
+
+
+
+    } catch {
+        res.status(500).json({ status: '0', msg: 'Error al obtener los usuarios con esas coincidencias.' })
+    }
+};
+
 //exportacion del modulo controlador
 module.exports = usuarioCtrl;
