@@ -16,6 +16,7 @@ mpCtrl.getPaymentLink = async (req, res) => {
                 pending: "http://localhost:4200/pending"
             }
         };
+        console.log(body);
         const respuesta = await axios.post(url, body, {
             headers: {
                 "Content-Type": "application/json",
@@ -24,6 +25,7 @@ mpCtrl.getPaymentLink = async (req, res) => {
 
             }
         });
+        console.log(respuesta.data);
         res.status(200).json(respuesta.data);
     } catch (error) {
         console.log(error.response?.data || error);
