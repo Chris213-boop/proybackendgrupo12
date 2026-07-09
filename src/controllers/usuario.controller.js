@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const { OAuth2Client } = require('google-auth-library');
+const Acceso = require('../models/acceso.model');
 
 const usuarioCtrl = {}
 
@@ -40,12 +41,12 @@ usuarioCtrl.loginUsuario = async (req, res) => {
         const user = await Usuario.findOne({ where: { username: req.body.username } });
         
         if (!user) {
-            return res.status(401).json({ status: 0, msg: "not found" });
+            return res.status(400).json({ status: 0, msg: "Usuario no encontrado" });
         }
 
         const isMatch = await bcrypt.compare(req.body.password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ status: 0, msg: "Credenciales incorrectas" });
+            return res.status(401).json({ status: 0, msg: "Credenciales incorrectas", id:user.id});
         }
 
         const unToken = jwt.sign(
@@ -256,6 +257,23 @@ usuarioCtrl.gerUsuarioPorId = async (req, res) => {
         res.json(usuario);
     } catch (error) {
         res.status(500).json({ status: '0', msg: 'Error al obtener el Usuario.' });
+    }
+};
+
+// Crear un acceso
+usuarioCtrl.addAcceso = async (req, res) => {
+    try {
+        data = req.body;
+        const usuario = await Usuario.findByPk(req.params.id);
+        if (usuario) {
+            data.usuarioId = usuario.id;
+            const acceso = await Acceso.create(data);
+            res.status(200).json({status: '1', msg: 'Acceso agregado.'});
+        } else {
+            res.status(404).json({status: '0', msg: 'Usuario no encontrado.'});
+        }
+    } catch (error) {
+        res.status(500).json({message: 'Error al agregar acceso', error: error.message});
     }
 };
 //exportacion del modulo controlador
