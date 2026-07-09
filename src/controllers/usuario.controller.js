@@ -60,6 +60,9 @@ usuarioCtrl.loginUsuario = async (req, res) => {
             username: user.username,
             perfil: user.perfil,
             userid: user.id,
+            nombre: user.nombres,
+            apellido: user.apellido,
+            email: user.email,
             token: unToken
         });
 
@@ -126,10 +129,13 @@ usuarioCtrl.loginGoogle = async (req, res) => {
 
         res.json({
             status: 1,
-            msg: 'success',
+            msg: "success",
             username: user.username,
             perfil: user.perfil,
             userid: user.id,
+            nombre: user.nombres,
+            apellido: user.apellido,
+            email: user.email,
             token: unToken
         });
 
