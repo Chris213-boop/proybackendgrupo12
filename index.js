@@ -13,7 +13,8 @@ app.use(cors({ origin: 'http://localhost:4200' }));
 //Cargamos el modulo de direccionamiento de rutas
 app.use('/api/productos', require('./src/routes/producto.route'));
 app.use('/api/contactos', require('./src/routes/contacto.route'));
-
+app.use('/api/pedidos', require('./src/routes/pedido.route'));
+app.use('/api/pagos', require('./src/routes/pago.route'));
 app.use('/api/usuario', require('./src/routes/usuario.route'));
 app.use('/api/dashboard', require('./src/routes/dashboard.route'));
 
