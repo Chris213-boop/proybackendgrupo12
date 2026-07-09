@@ -25,7 +25,7 @@ const  Usuario = sequelize.define('Usuario', {
     timestamps: true,
 });
 
-Usuario.hasMany(Acceso, { foreignKey: 'usuarioId'});
-Acceso.belongsTo(Usuario, { foreignKey: 'usuarioId' });
+Usuario.hasMany(Acceso, { foreignKey: 'usuarioId', as: 'accesos' });
+Acceso.belongsTo(Usuario, { foreignKey: 'usuarioId', as: 'usuario' });
 
 module.exports = Usuario;
