@@ -174,7 +174,12 @@ usuarioCtrl.getUsuarios = async (req, res) => {
         #swagger.summary = 'Obtener todos los usuarios'
         */
     try {
-        const usuarios = await Usuario.findAll();
+        const usuarios = await Usuario.findAll({
+            include: [{
+            model: Acceso,
+            as: 'accesos'
+            }]
+        });
         res.json(usuarios);
     } catch (error) {
         res.status(500).json({ status: '0', msg: 'Error al obtener los Usuarios.' });
