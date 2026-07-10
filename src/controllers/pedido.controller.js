@@ -1,6 +1,9 @@
 const sequelize = require('../../config/database');
 const Pedido = require('../models/pedido.models');
 const Detalle = require('../models/detalle.model');
+const Usuario = require('../models/usuario.models');
+const Producto = require('../models/producto.model');
+
 const pedidoCtrl = {};
 
 pedidoCtrl.crearPedido = async (req, res) => {
@@ -35,7 +38,25 @@ pedidoCtrl.crearPedido = async (req, res) => {
 
 pedidoCtrl.getPedidos = async (req, res) => {
     try {
-        const pedidos = await Pedido.findAll({ include: { model: Detalle, as: 'detalles' } });
+        const pedidos = await Pedido.findAll({
+            include: [
+                {
+                    model: Usuario,
+                    attributes: ['id', 'nombres', 'apellido']
+                },
+                {
+                    model: Detalle,
+                    as: 'detalles',
+                    include: [
+                        {
+                            model: Producto,
+                            attributes: ['nombre', 'precio']
+                        }
+                    ]
+                }
+            ],
+            order: [['fecha', 'DESC']]
+        });
         res.json(pedidos);
     } catch (error) {
         console.error(error);
