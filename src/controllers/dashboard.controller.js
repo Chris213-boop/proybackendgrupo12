@@ -25,6 +25,15 @@ dashboardCtrl.getDashboardStats = async (req, res) => {
             servidor: true
         };
 
+        const informacionSistema = {
+            version: process.env.APP_VERSION || '1.0.0',
+            framework: process.env.FRONTEND_FRAMEWORK || 'Angular 21',
+            nodeVersion: process.version,
+            baseDatos: 'PostgreSQL',
+            ultimaActualizacion: new Date().toLocaleDateString('es-AR'),
+            emailJs: true
+        };
+
         res.json({
             usuarios,
             productos,
@@ -32,7 +41,8 @@ dashboardCtrl.getDashboardStats = async (req, res) => {
             ventasMes,
             mensajes,
             clientes,
-            estadoSistema
+            estadoSistema,
+            informacionSistema
         });
     } catch (error) {
         res.status(500).json({ status: '0', msg: 'Error al obtener estadísticas del dashboard.', error: error.message });
