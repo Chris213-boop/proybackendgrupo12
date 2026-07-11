@@ -45,7 +45,15 @@ pagoCtrl.registrarPago = async (req, res) => {
 
 pagoCtrl.obtenerPagos = async (req, res) => {
     try {
-        const pagos = await PagoMercadoPago.findAll();
+        const pagos = await PagoMercadoPago.findAll({
+            include: [
+                {
+                    model: Pedido,
+                    attributes: ['id', 'total', 'fecha', 'estado_envio'], 
+                }
+            ],
+            order: [['fecha_pago', 'DESC']] // para ordenar del mas reciente
+        });
         return res.json(pagos);
     } catch (error) {
         return res.status(400).json({ status: '0', msg: 'Error al obtener los pagos.' });
