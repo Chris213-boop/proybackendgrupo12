@@ -56,7 +56,7 @@ estadisticaCtrl.getIngresosPorFecha = async (req, res) => {
             include: [{
                 model: PagoMercadoPago,
                 where: {
-                    estado_pago: 'APROBADO'
+                    estado_pago: 'approved' || 'APROBADO'
                 },
                 attributes: []
             }],
