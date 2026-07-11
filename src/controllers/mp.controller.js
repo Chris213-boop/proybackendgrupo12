@@ -13,15 +13,15 @@ mpCtrl.getPaymentLink = async (req, res) => {
         };
         
         console.log("--- SOLICITANDO LINK DE CHECKOUT SEGURO A MP ---");
-        //console.log(body);
+        
         const respuesta = await axios.post(url, body, {
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
                 "X-Idempotency-Key": crypto.randomUUID()
             }
-
-          
+        });
+        
         // respuesta que contiene el init_point
         return res.status(200).json(respuesta.data);
 
@@ -35,6 +35,6 @@ mpCtrl.getPaymentLink = async (req, res) => {
             detalles: error.response?.data || error.message 
         });
     }
-    
 };   
+
 module.exports = mpCtrl;
