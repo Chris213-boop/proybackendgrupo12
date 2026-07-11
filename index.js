@@ -19,6 +19,7 @@ app.use('/api/usuario', require('./src/routes/usuario.route'));
 app.use('/api/dashboard', require('./src/routes/dashboard.route'));
 app.use('/api/estadisticas', require('./src/routes/estadisticas.route'));
 app.use('/api/mp', require('./src/routes/mp.route'));
+app.use('/api/configuracion', require('./src/routes/configuracion.route'));
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
