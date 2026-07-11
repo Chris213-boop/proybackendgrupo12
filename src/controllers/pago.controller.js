@@ -2,36 +2,53 @@ const Pedido = require('../models/pedido.models');
 const PagoMercadoPago = require('../models/pago.models');
 const pagoCtrl = {};
 
-//crear pago
 pagoCtrl.registrarPago = async (req, res) => {
-    const { pedidoId, mp_payment_id, estado_pago } = req.body;
+    const { pedidoId, mp_payment_id, estado_pago } = req.body || {}; 
+    
+    if (!pedidoId || !mp_payment_id) {
+        console.log('[BACKEND] Error: Petición de pago recibida con datos insuficientes.', req.body);
+        return res.status(400).json({ 
+            status: '0', 
+            msg: 'Datos de pago insuficientes en el body.' 
+        });
+    }
+
     try {
         const pedido = await Pedido.findByPk(pedidoId);
-        if (!pedido) return res.status(404).json({ status: '0', msg: 'Pedido no encontrado' });
+        if (!pedido) {
+            console.log(`[BACKEND] Error: El pedido ID ${pedidoId} no existe.`);
+            return res.status(404).json({ status: '0', msg: 'Pedido no encontrado' });
+        }
 
-        await PagoMercadoPago.create({ pedidoId, mp_payment_id, estado_pago });
+        await PagoMercadoPago.create({ 
+            pedidoId: Number(pedidoId), 
+            mp_payment_id: String(mp_payment_id), 
+            estado_pago: String(estado_pago) 
+        });
 
-        if (estado_pago === 'APROBADO') {
+        if (estado_pago === 'APROBADO' || estado_pago === 'approved') {
             await pedido.update({ estado_envio: 'Despachado' });
         }
 
-        res.status(201).json({ status: '1', msg: 'Pago registrado' });
+        console.log(`[BACKEND] Éxito: Pago registrado para el Pedido #${pedidoId}`);
+        return res.status(201).json({ status: '1', msg: 'Pago registrado con éxito' });
+
     } catch (error) {
-        res.status(500).json({ status: '0', msg: 'Error al registrar el pago' });
+        console.error('[BACKEND CRÍTICO] Falló la inserción en Sequelize:', error);
+        return res.status(500).json({ 
+            status: '0', 
+            msg: 'Error interno al registrar el pago', 
+            error: error.message 
+        });
     }
 };
 
-//mostrar todos
 pagoCtrl.obtenerPagos = async (req, res) => {
-    /*
-    #swagger.tags = ['Pago']
-    #swagger.summary = 'Obtener todos los pagos'
-    */
     try {
         const pagos = await PagoMercadoPago.findAll();
-        res.json(pagos);
+        return res.json(pagos);
     } catch (error) {
-        res.status(400).json({ status: '0', msg: 'Error al obtener los pagos.' });
+        return res.status(400).json({ status: '0', msg: 'Error al obtener los pagos.' });
     }
 };
 
