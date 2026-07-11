@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const { OAuth2Client } = require('google-auth-library');
 const Acceso = require('../models/acceso.model');
+const { Op } = require('sequelize');
 
 const usuarioCtrl = {}
 
@@ -39,18 +40,18 @@ usuarioCtrl.loginUsuario = async (req, res) => {
 
     try {
         const user = await Usuario.findOne({ where: { username: req.body.username } });
-        
+
         if (!user) {
             return res.status(400).json({ status: 0, msg: "Usuario no encontrado" });
         }
 
         const isMatch = await bcrypt.compare(req.body.password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ status: 0, msg: "Credenciales incorrectas", id:user.id});
+            return res.status(401).json({ status: 0, msg: "Credenciales incorrectas", id: user.id });
         }
 
         const unToken = jwt.sign(
-            { id: user.id, perfil: user.perfil }, 
+            { id: user.id, perfil: user.perfil },
             process.env.JWT_SECRET
         );
 
@@ -71,11 +72,12 @@ usuarioCtrl.loginUsuario = async (req, res) => {
     }
 }
 
-
+//loguear usuario
 usuarioCtrl.loginGoogle = async (req, res) => {
     /*
     #swagger.tags = ['Usuario']
     #swagger.summary = 'Iniciar sesión con Google OAuth'
+    #swagger.description = 'Autentica un usuario mediante Google OAuth utilizando el ID Token (credential). Si el usuario no existe en la base de datos, se crea automáticamente con perfil Cliente y se devuelve un JWT para acceder al sistema.'
     #swagger.parameters['body'] = {
         in: 'body',
         required: true,
@@ -94,7 +96,7 @@ usuarioCtrl.loginGoogle = async (req, res) => {
             idToken: credential,
             audience: process.env.GOOGLE_CLIENT_ID
         });
-        const payload = ticket.getPayload(); 
+        const payload = ticket.getPayload();
 
         // 2. Buscamos si ya existe un usuario con ese email
         let user = await Usuario.findOne({ where: { email: payload.email } });
@@ -173,15 +175,15 @@ usuarioCtrl.createUsuario = async (req, res) => {
     }
 }
 
-// Obtener todos los socios
+// Obtener todos los usuarios
 usuarioCtrl.getUsuarios = async (req, res) => {
     /*
         #swagger.tags = ['Usuario']
         #swagger.summary = 'Obtener todos los usuarios'
         */
     try {
-        const usuarios = await Usuario.findAll({ 
-            include:[{
+        const usuarios = await Usuario.findAll({
+            include: [{
                 model: Acceso,
                 as: "accesos",
                 attributes: {
@@ -195,7 +197,7 @@ usuarioCtrl.getUsuarios = async (req, res) => {
     }
 };
 
-// Eliminar un socio
+// Eliminar un usuario
 usuarioCtrl.deleteUsuario = async (req, res) => {
     /*
         #swagger.tags = ['Usuario']
@@ -217,7 +219,7 @@ usuarioCtrl.deleteUsuario = async (req, res) => {
     }
 };
 
-// Editar un socio
+// Editar un usuario
 usuarioCtrl.editUsuario = async (req, res) => {
     /*
         #swagger.tags = ['Usuario']
@@ -276,18 +278,39 @@ usuarioCtrl.gerUsuarioPorId = async (req, res) => {
 
 // Crear un acceso
 usuarioCtrl.addAcceso = async (req, res) => {
+    /*
+    #swagger.tags = ['Usuario']
+    #swagger.summary = 'Registrar acceso de usuario'
+    #swagger.description = 'Registra un nuevo acceso asociado a un usuario existente, almacenando la fecha, IP de origen y la acción realizada.'
+
+    #swagger.parameters['id'] = {
+        in: 'path',
+        description: 'ID del usuario al que pertenece el acceso.',
+        required: true,
+        type: 'integer'
+    }
+
+    #swagger.parameters['body'] = {
+        in: 'body',
+        description: 'Datos del acceso del usuario.',
+        required: true,
+        schema: {
+            $ref: '#/definitions/Acceso'
+        }
+    }
+        */
     try {
         data = req.body;
         const usuario = await Usuario.findByPk(req.params.id);
         if (usuario) {
             data.usuarioId = usuario.id;
             const acceso = await Acceso.create(data);
-            res.status(200).json({status: '1', msg: 'Acceso agregado.'});
+            res.status(200).json({ status: '1', msg: 'Acceso agregado.' });
         } else {
-            res.status(404).json({status: '0', msg: 'Usuario no encontrado.'});
+            res.status(404).json({ status: '0', msg: 'Usuario no encontrado.' });
         }
     } catch (error) {
-        res.status(500).json({message: 'Error al agregar acceso', error: error.message});
+        res.status(500).json({ message: 'Error al agregar acceso', error: error.message });
     }
 };
 
@@ -297,13 +320,8 @@ usuarioCtrl.addAcceso = async (req, res) => {
 usuarioCtrl.getBuscarCoincidenciaEnNombre = async (req, res) => {
     /*
         #swagger.tags = ['Usuario']
-        #swagger.summary = 'Buscar socios por coincidencia en nombre.'
+        #swagger.summary = 'Buscar usuarios por coincidencia en nombre.'
         #swagger.description = 'Busca en la columna de nombres, los usuarios que tengan coincidencia con la descripcion que se coloca.'
-        #swagger.parameters['nombres'] = {
-            in: 'path',
-            required: true,
-            type: 'string'
-        }
         */
     console.log("Entró a buscarPorNombre");
     try {
@@ -331,10 +349,6 @@ usuarioCtrl.getBuscarCoincidenciaEnNombre = async (req, res) => {
         } else {
             res.status(404).json({ status: '0', msg: 'No hay coincidencias.' })
         }
-
-
-
-
     } catch {
         res.status(500).json({ status: '0', msg: 'Error al obtener los usuarios con esas coincidencias.' })
     }

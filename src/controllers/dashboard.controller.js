@@ -6,6 +6,10 @@ const Contacto = require('../models/contacto.model');
 const dashboardCtrl = {};
 
 dashboardCtrl.getDashboardStats = async (req, res) => {
+    /*
+    #swagger.tags = ['Dashboard']
+    #swagger.summary = 'Obtiene las estadísticas del dashboard del Administrador'
+*/
     try {
         const [usuarios, productos, mensajes, clientes] = await Promise.all([
             Usuario.count(),

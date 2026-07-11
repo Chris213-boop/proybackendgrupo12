@@ -6,6 +6,11 @@ const Producto = require("../models/producto.model");
 const estadisticaCtrl = {};
 
 estadisticaCtrl.getVentasPorCategoria = async (req, res) => {
+    /*
+        #swagger.tags = ['Dashboard']
+        #swagger.summary = 'Obtener ventas por categoría'
+        #swagger.description = 'Devuelve la cantidad total de productos vendidos agrupados por categoría.'
+*/
     try {
         const datos = await Detalle.findAll({
             attributes: [
@@ -36,6 +41,11 @@ estadisticaCtrl.getVentasPorCategoria = async (req, res) => {
 };
 
 estadisticaCtrl.getIngresosPorFecha = async (req, res) => {
+    /*
+        #swagger.tags = ['Dashboard']
+        #swagger.summary = 'Obtener ingresos por fecha'
+        #swagger.description = 'Devuelve el total de ingresos por día considerando únicamente los pagos aprobados.'
+*/
     try {
         const ingresos = await Pedido.findAll({
             attributes: [
@@ -63,6 +73,11 @@ estadisticaCtrl.getIngresosPorFecha = async (req, res) => {
 };
 
 estadisticaCtrl.getTotalVentas = async (req, res) => {
+    /*
+        #swagger.tags = ['Dashboard']
+        #swagger.summary = 'Obtener total de ventas'
+        #swagger.description = 'Calcula el importe total de todas las ventas con pagos aprobados.'
+*/
     try {
         const total = await Pedido.sum("total", {
             include: [{
@@ -85,6 +100,11 @@ estadisticaCtrl.getTotalVentas = async (req, res) => {
 };
 
 estadisticaCtrl.getPedidosPendientes = async (req, res) => {
+    /*
+        #swagger.tags = ['Dashboard']
+        #swagger.summary = 'Obtener cantidad de pedidos pendientes'
+        #swagger.description = 'Devuelve la cantidad de pedidos cuyo estado de envío es Pendiente.'
+*/
     try {
         const cantidad = await Pedido.count({
             where: {
@@ -100,6 +120,11 @@ estadisticaCtrl.getPedidosPendientes = async (req, res) => {
 };
 
 estadisticaCtrl.getProductosSinStock = async (req, res) => {
+    /*
+        #swagger.tags = ['Dashboard']
+        #swagger.summary = 'Obtener productos sin stock'
+        #swagger.description = 'Devuelve la cantidad de productos cuyo stock es igual a cero.'
+*/
     try {
         const cantidad = await Producto.count({
             where: {
@@ -115,6 +140,11 @@ estadisticaCtrl.getProductosSinStock = async (req, res) => {
 };
 
 estadisticaCtrl.getProductosMasVendidos = async (req, res) => {
+    /*
+        #swagger.tags = ['Dashboard']
+        #swagger.summary = 'Obtener los productos más vendidos'
+        #swagger.description = 'Devuelve los cinco productos con mayor cantidad de ventas.'
+*/
     try {
         const datos = await Detalle.findAll({
             attributes: [
