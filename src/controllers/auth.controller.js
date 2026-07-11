@@ -46,4 +46,12 @@ authCtrl.isEmpleado = (req, res, next) => {
     }
 };
 
+authCtrl.isCliente = (req, res, next) => {
+    if (req.userPerfil && req.userPerfil === 'Cliente') {
+        next();
+    } else {
+        return res.status(403).json({ status: 0, msg: 'Acceso denegado: Se requieren permisos de Cliente.' });
+    }
+};
+
 module.exports = authCtrl;
