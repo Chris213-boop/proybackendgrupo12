@@ -7,6 +7,18 @@ const Producto = require('../models/producto.model');
 const pedidoCtrl = {};
 
 pedidoCtrl.crearPedido = async (req, res) => {
+    /*
+    #swagger.tags = ['Pedido']
+    #swagger.summary = 'Crear un nuevo pedido'
+    #swagger.description = 'Crea un pedido asociado a un usuario y registra los productos comprados junto con sus cantidades y precios históricos.'
+
+    #swagger.parameters['body'] = {
+        in: 'body',
+        description: 'Datos necesarios para crear el pedido.',
+        required: true,
+        schema: { $ref: '#/definitions/PedidoCreate' }
+    }
+    */
     const { usuarioId, items, id_mercado_pago } = req.body;
     const t = await sequelize.transaction();
     try {
@@ -37,6 +49,11 @@ pedidoCtrl.crearPedido = async (req, res) => {
 };
 
 pedidoCtrl.getPedidos = async (req, res) => {
+    /*
+    #swagger.tags = ['Pedido']
+    #swagger.summary = 'Obtener todos los pedidos'
+    #swagger.description = 'Devuelve todos los pedidos registrados incluyendo información del usuario, detalles y productos asociados.'
+    */
     try {
         const pedidos = await Pedido.findAll({
             include: [
@@ -65,6 +82,18 @@ pedidoCtrl.getPedidos = async (req, res) => {
 };
 
 pedidoCtrl.getPedidoPorId = async (req, res) => {
+    /*
+    #swagger.tags = ['Pedido']
+    #swagger.summary = 'Obtener un pedido por ID'
+    #swagger.description = 'Obtiene la información de un pedido específico junto con sus detalles.'
+
+    #swagger.parameters['id'] = {
+        in: 'path',
+        description: 'ID del pedido.',
+        required: true,
+        type: 'integer'
+    }
+        */
     try {
         const pedido = await Pedido.findByPk(req.params.id, { include: { model: Detalle, as: 'detalles' } });
         res.json(pedido);
@@ -74,6 +103,27 @@ pedidoCtrl.getPedidoPorId = async (req, res) => {
 };
 
 pedidoCtrl.actualizarEstado = async (req, res) => {
+    /*
+    #swagger.tags = ['Pedido']
+    #swagger.summary = 'Actualizar estado de un pedido'
+    #swagger.description = 'Actualiza el estado de envío de un pedido. Los estados posibles pueden ser Pendiente, Despachado o Entregado.'
+
+    #swagger.parameters['id'] = {
+        in: 'path',
+        description: 'ID del pedido.',
+        required: true,
+        type: 'integer'
+    }
+
+    #swagger.parameters['body'] = {
+        in: 'body',
+        description: 'Nuevo estado del pedido.',
+        required: true,
+        schema: {
+            $ref: '#/definitions/ActualizarEstadoPedido'
+        }
+    }
+        */
     try {
         const pedido = await Pedido.findByPk(req.params.id);
         if (!pedido) return res.status(404).json({ status: '0', msg: 'Pedido no encontrado' });

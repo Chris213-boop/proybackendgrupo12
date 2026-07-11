@@ -3,6 +3,18 @@ const PagoMercadoPago = require('../models/pago.models');
 const pagoCtrl = {};
 
 pagoCtrl.registrarPago = async (req, res) => {
+    /*
+    #swagger.tags = ['MercadoPago']
+    #swagger.summary = 'Registrar pago de un pedido'
+    #swagger.description = 'Registra la información del pago realizado en MercadoPago. Si el pago fue aprobado, actualiza automáticamente el estado del pedido a Despachado.'
+
+    #swagger.parameters['body'] = {
+        in: 'body',
+        description: 'Datos del pago realizado.',
+        required: true,
+        schema: { $ref: '#/definitions/Pago' }
+    }
+    */
     const { pedidoId, mp_payment_id, estado_pago } = req.body || {}; 
     
     if (!pedidoId || !mp_payment_id) {
@@ -44,6 +56,11 @@ pagoCtrl.registrarPago = async (req, res) => {
 };
 
 pagoCtrl.obtenerPagos = async (req, res) => {
+    /*
+    #swagger.tags = ['MercadoPago']
+    #swagger.summary = 'Obtener pagos registrados'
+    #swagger.description = 'Devuelve el listado de todos los pagos registrados en el sistema.'
+    */
     try {
         const pagos = await PagoMercadoPago.findAll();
         return res.json(pagos);

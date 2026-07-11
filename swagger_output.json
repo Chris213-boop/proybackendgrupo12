@@ -1,8 +1,8 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "API Tienda de Ropa",
-    "description": "Documentación de la API para la gestión de productos y contactos.",
+    "title": "API Joyería",
+    "description": "Documentación de la API para la gestión de la joyería.",
     "version": "1.0.0"
   },
   "host": "localhost:3000",
@@ -19,6 +19,22 @@
     {
       "name": "Usuario",
       "description": "Operaciones relacionadas con los usuarios."
+    },
+    {
+      "name": "Dashboard",
+      "description": "Operaciones relacionadas con el panel de estadísticas."
+    },
+    {
+      "name": "Configuración",
+      "description": "Operaciones relacionadas con la configuración general del sistema."
+    },
+    {
+      "name": "MercadoPago",
+      "description": "Operaciones relacionadas con pagos mediante MercadoPago."
+    },
+    {
+      "name": "Pedido",
+      "description": "Operaciones relacionadas con la gestión de pedidos."
     }
   ],
   "schemes": [
@@ -33,9 +49,22 @@
         ],
         "summary": "Obtener todos los productos",
         "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "500": {
             "description": "Internal Server Error"
@@ -277,6 +306,221 @@
         }
       }
     },
+    "/api/pedidos/": {
+      "post": {
+        "tags": [
+          "Pedido"
+        ],
+        "summary": "Crear un nuevo pedido",
+        "description": "Crea un pedido asociado a un usuario y registra los productos comprados junto con sus cantidades y precios históricos.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Datos necesarios para crear el pedido.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PedidoCreate"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Pedido"
+        ],
+        "summary": "Obtener todos los pedidos",
+        "description": "Devuelve todos los pedidos registrados incluyendo información del usuario, detalles y productos asociados.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/pedidos/{id}": {
+      "get": {
+        "tags": [
+          "Pedido"
+        ],
+        "summary": "Obtener un pedido por ID",
+        "description": "Obtiene la información de un pedido específico junto con sus detalles.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID del pedido."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/pedidos/{id}/estado": {
+      "put": {
+        "tags": [
+          "Pedido"
+        ],
+        "summary": "Actualizar estado de un pedido",
+        "description": "Actualiza el estado de envío de un pedido. Los estados posibles pueden ser Pendiente, Despachado o Entregado.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID del pedido."
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Nuevo estado del pedido.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ActualizarEstadoPedido"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/pagos/": {
+      "post": {
+        "tags": [
+          "MercadoPago"
+        ],
+        "summary": "Registrar pago de un pedido",
+        "description": "Registra la información del pago realizado en MercadoPago. Si el pago fue aprobado, actualiza automáticamente el estado del pedido a Despachado.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Datos del pago realizado.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Pago"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "MercadoPago"
+        ],
+        "summary": "Obtener pagos registrados",
+        "description": "Devuelve el listado de todos los pagos registrados en el sistema.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        }
+      }
+    },
     "/api/usuario/login": {
       "post": {
         "tags": [
@@ -352,6 +596,42 @@
         }
       }
     },
+    "/api/usuario/google-login": {
+      "post": {
+        "tags": [
+          "Usuario"
+        ],
+        "summary": "Iniciar sesión con Google OAuth",
+        "description": "Autentica un usuario mediante Google OAuth utilizando el ID Token (credential). Si el usuario no existe en la base de datos, se crea automáticamente con perfil Cliente y se devuelve un JWT para acceder al sistema.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "credential": {
+                  "type": "string",
+                  "example": "eyJhbGciOi..."
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/api/usuario/": {
       "post": {
         "tags": [
@@ -384,9 +664,50 @@
         ],
         "summary": "Obtener todos los usuarios",
         "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/usuario/buscar/{texto}": {
+      "get": {
+        "tags": [
+          "Usuario"
+        ],
+        "summary": "Buscar usuarios por coincidencia en nombre.",
+        "description": "Busca en la columna de nombres, los usuarios que tengan coincidencia con la descripcion que se coloca.",
+        "parameters": [
+          {
+            "name": "texto",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"
@@ -407,6 +728,11 @@
             "in": "path",
             "required": true,
             "type": "integer"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
           }
         ],
         "responses": {
@@ -415,6 +741,12 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           }
         }
       },
@@ -432,6 +764,11 @@
             "type": "integer"
           },
           {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
             "name": "body",
             "in": "body",
             "required": true,
@@ -443,6 +780,12 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "404": {
             "description": "Not Found"
@@ -464,6 +807,55 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/usuario/{id}/acceso": {
+      "post": {
+        "tags": [
+          "Usuario"
+        ],
+        "summary": "Registrar acceso de usuario",
+        "description": "Registra un nuevo acceso asociado a un usuario existente, almacenando la fecha, IP de origen y la acción realizada.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "ID del usuario al que pertenece el acceso."
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Datos del acceso del usuario.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Acceso"
+            }
           }
         ],
         "responses": {
@@ -481,10 +873,207 @@
     },
     "/api/dashboard/stats": {
       "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Obtiene las estadísticas del dashboard del Administrador",
         "description": "",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/estadisticas/grafico-categorias": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Obtener ventas por categoría",
+        "description": "Devuelve la cantidad total de productos vendidos agrupados por categoría.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/estadisticas/grafico-ingresos": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Obtener ingresos por fecha",
+        "description": "Devuelve el total de ingresos por día considerando únicamente los pagos aprobados.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/estadisticas/total-ventas": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Obtener total de ventas",
+        "description": "Calcula el importe total de todas las ventas con pagos aprobados.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/estadisticas/pedidos-pendientes": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Obtener cantidad de pedidos pendientes",
+        "description": "Devuelve la cantidad de pedidos cuyo estado de envío es Pendiente.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/estadisticas/productos-sin-stock": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Obtener productos sin stock",
+        "description": "Devuelve la cantidad de productos cuyo stock es igual a cero.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/estadisticas/productos-mas-vendidos": {
+      "get": {
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Obtener los productos más vendidos",
+        "description": "Devuelve los cinco productos con mayor cantidad de ventas.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "500": {
             "description": "Internal Server Error"
@@ -494,19 +1083,25 @@
     },
     "/api/mp/payment": {
       "post": {
-        "description": "",
+        "tags": [
+          "MercadoPago"
+        ],
+        "summary": "Crear enlace de pago",
+        "description": "Crea una preferencia de pago en MercadoPago y devuelve el enlace de checkout para que el usuario pueda realizar el pago.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "Lista de productos que forman parte del pedido.",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "items": {
-                  "example": "any"
-                },
-                "comprador": {
-                  "example": "any"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/MercadoPagoItem"
+                  }
                 }
               }
             }
@@ -521,6 +1116,73 @@
           }
         }
       }
+    },
+    "/api/configuracion/": {
+      "get": {
+        "tags": [
+          "Configuración"
+        ],
+        "summary": "Obtener la configuración del sistema",
+        "description": "Devuelve la configuración general del sistema. Si aún no existe, se crea automáticamente con los valores por defecto.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Configuración"
+        ],
+        "summary": "Actualizar la configuración del sistema",
+        "description": "Actualiza la configuración general del sistema. Si no existe un registro de configuración, se crea automáticamente.",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Datos de la configuración.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Configuracion"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -529,11 +1191,11 @@
       "properties": {
         "nombre": {
           "type": "string",
-          "example": "Remera Oversize"
+          "example": "Anillo de diamante de moissanita"
         },
         "categoria": {
           "type": "string",
-          "example": "Remeras"
+          "example": "anillos"
         },
         "precio": {
           "type": "number",
@@ -545,23 +1207,23 @@
         },
         "imagen": {
           "type": "string",
-          "example": "https://misitio.com/imagenes/remera.jpg"
+          "example": "https://m.media-amazon.com/images/I/61rM-Gbrf0L._AC_SY450_.jpg"
         },
         "descripcion": {
           "type": "string",
-          "example": "Remera de algodón oversize."
+          "example": "Anillo de diamante de moissanita de corte esmeralda/radiante para mujer, anillo de promesa de boda con halo brillante, chapado en platino, plata 925."
         },
         "material": {
           "type": "string",
-          "example": "Algodón"
+          "example": "Plata 925"
         },
         "destacado": {
           "type": "boolean",
           "example": true
         },
         "stock": {
-          "type": "boolean",
-          "example": true
+          "type": "number",
+          "example": 3
         }
       }
     },
@@ -608,6 +1270,10 @@
         "perfil": {
           "type": "string",
           "example": "administrador"
+        },
+        "email": {
+          "type": "string",
+          "example": "juan@gmail.com"
         }
       }
     },
@@ -621,6 +1287,314 @@
         "password": {
           "type": "string",
           "example": "123456"
+        }
+      }
+    },
+    "Dashboard": {
+      "type": "object",
+      "properties": {
+        "usuarios": {
+          "type": "number",
+          "example": 15
+        },
+        "productos": {
+          "type": "number",
+          "example": 40
+        },
+        "pedidos": {
+          "type": "number",
+          "example": 8
+        },
+        "ventasMes": {
+          "type": "number",
+          "example": 35000
+        },
+        "mensajes": {
+          "type": "number",
+          "example": 12
+        },
+        "clientes": {
+          "type": "number",
+          "example": 10
+        },
+        "estadoSistema": {
+          "type": "object",
+          "properties": {
+            "api": {
+              "type": "boolean",
+              "example": true
+            },
+            "baseDatos": {
+              "type": "boolean",
+              "example": true
+            },
+            "mercadoPago": {
+              "type": "boolean",
+              "example": true
+            },
+            "servidor": {
+              "type": "boolean",
+              "example": true
+            }
+          }
+        }
+      }
+    },
+    "Configuracion": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number",
+          "example": 1
+        },
+        "longitudMinima": {
+          "type": "number",
+          "example": 8
+        },
+        "requiereMayusculas": {
+          "type": "boolean",
+          "example": true
+        },
+        "requiereNumeros": {
+          "type": "boolean",
+          "example": true
+        },
+        "requiereEspeciales": {
+          "type": "boolean",
+          "example": true
+        },
+        "intentosPermitidos": {
+          "type": "number",
+          "example": 5
+        },
+        "tiempoBloqueoMinutos": {
+          "type": "number",
+          "example": 15
+        },
+        "bloquearAutomaticamente": {
+          "type": "boolean",
+          "example": true
+        },
+        "tiempoInactividadMinutos": {
+          "type": "number",
+          "example": 30
+        },
+        "cerrarSesionAutomaticamente": {
+          "type": "boolean",
+          "example": true
+        },
+        "permitirMultiplesSesiones": {
+          "type": "boolean",
+          "example": false
+        },
+        "autenticacionPassword": {
+          "type": "boolean",
+          "example": true
+        },
+        "autenticacion2FA": {
+          "type": "boolean",
+          "example": false
+        },
+        "loginGoogle": {
+          "type": "boolean",
+          "example": false
+        }
+      }
+    },
+    "VentasPorCategoria": {
+      "type": "object",
+      "properties": {
+        "categoria": {
+          "type": "string",
+          "example": "anillos"
+        },
+        "total_vendido": {
+          "type": "number",
+          "example": 35
+        }
+      }
+    },
+    "IngresosPorFecha": {
+      "type": "object",
+      "properties": {
+        "fecha_dia": {
+          "type": "string",
+          "example": "2026-07-10"
+        },
+        "total_ingresos": {
+          "type": "number",
+          "example": 152000.5
+        }
+      }
+    },
+    "TotalVentas": {
+      "type": "object",
+      "properties": {
+        "total": {
+          "type": "number",
+          "example": 350000.75
+        }
+      }
+    },
+    "Cantidad": {
+      "type": "object",
+      "properties": {
+        "cantidad": {
+          "type": "number",
+          "example": 8
+        }
+      }
+    },
+    "ProductoMasVendido": {
+      "type": "object",
+      "properties": {
+        "producto": {
+          "type": "string",
+          "example": "Anillo de diamante de moissanita"
+        },
+        "vendidos": {
+          "type": "number",
+          "example": 42
+        }
+      }
+    },
+    "MercadoPagoItem": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "Anillo de plata"
+        },
+        "quantity": {
+          "type": "number",
+          "example": 1
+        },
+        "unit_price": {
+          "type": "number",
+          "example": 25000
+        },
+        "currency_id": {
+          "type": "string",
+          "example": "ARS"
+        }
+      }
+    },
+    "MercadoPagoPreference": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "123456789"
+        },
+        "init_point": {
+          "type": "string",
+          "example": "https://www.mercadopago.com.ar/checkout/v1/redirect?pref_id=123"
+        },
+        "external_reference": {
+          "type": "string",
+          "example": "PEDIDO_1720000000000"
+        }
+      }
+    },
+    "Pago": {
+      "type": "object",
+      "properties": {
+        "pedidoId": {
+          "type": "number",
+          "example": 1
+        },
+        "mp_payment_id": {
+          "type": "string",
+          "example": "123456789"
+        },
+        "estado_pago": {
+          "type": "string",
+          "example": "APROBADO"
+        }
+      }
+    },
+    "RespuestaPago": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "1"
+        },
+        "msg": {
+          "type": "string",
+          "example": "Pago registrado con éxito"
+        }
+      }
+    },
+    "PedidoCreate": {
+      "type": "object",
+      "properties": {
+        "usuarioId": {
+          "type": "number",
+          "example": 1
+        },
+        "id_mercado_pago": {
+          "type": "string",
+          "example": "MP-123456789"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "productoId": {
+                "type": "number",
+                "example": 5
+              },
+              "cantidad": {
+                "type": "number",
+                "example": 2
+              },
+              "precio_unitario": {
+                "type": "number",
+                "example": 25000
+              }
+            }
+          }
+        }
+      }
+    },
+    "ActualizarEstadoPedido": {
+      "type": "object",
+      "properties": {
+        "estado_envio": {
+          "type": "string",
+          "example": "Despachado"
+        }
+      }
+    },
+    "PedidoRespuesta": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "example": "1"
+        },
+        "pedidoId": {
+          "type": "number",
+          "example": 15
+        }
+      }
+    },
+    "Acceso": {
+      "type": "object",
+      "properties": {
+        "fecha_hora": {
+          "type": "string",
+          "example": "2026-07-11T15:30:00.000Z"
+        },
+        "ip_origen": {
+          "type": "string",
+          "example": "192.168.1.10"
+        },
+        "accion_realizada": {
+          "type": "string",
+          "example": "Login exitoso"
         }
       }
     }
